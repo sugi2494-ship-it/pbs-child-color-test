@@ -4787,7 +4787,7 @@ const PBS_SUPABASE_URL = 'https://oqxlsnyuwtmjmbhgzjoz.supabase.co';
 const PBS_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9xeGxzbnl1d3Rtam1iaGd6am96Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY3NTc5NDksImV4cCI6MjA5MjMzMzk0OX0.C-PPch12eVru2xhuU80WPYdBj5CJb1Py8m1-OsaGZW8';
 const PBS_TEST_TYPES = ['child_30'];
 const PBS_FILE_KIND = 'child';
-const PBS_PUBLIC_URL = 'https://pbscolor-5.vercel.app/child.html'; // 어린이판 운영 URL
+const PBS_PUBLIC_URL = 'https://pbs-child-color-test.vercel.app'; // 어린이판 운영 URL (2026-05-14 갱신)
 
 window.pbsDB = null;
 window.pbsDBReady = false;
@@ -6213,12 +6213,14 @@ function escapeHtml(s){
    관리자 모드 (잘려나간 부분 복원)
    ============================================================ */
 async function openAdminMode() {
-  // ✨ Supabase 자동 동기화는 끔 (옛 데이터 자동 부활 방지)
-  // 필요시 관리자 콘솔 안에서 수동 '새로고침' 버튼을 사용하세요.
-  // (옛 동작이 필요하면 아래 주석을 풀면 됨)
-  // if (window.PBS && window.PBS.syncRecordsToLocal) {
-  //   try { await window.PBS.syncRecordsToLocal(); } catch(e) {}
-  // }
+  // ✨ Supabase 자동 동기화 — reset-stamp 이후 데이터만 가져옴 (옛 데이터는 차단)
+  // 이 동기화 덕분에 다른 사람들이 진단한 결과도 관리자에서 볼 수 있어요.
+  if (window.PBS && window.PBS.syncRecordsToLocal) {
+    try {
+      const r = await window.PBS.syncRecordsToLocal();
+      if (r?.ok) console.log('[PBS-Child] 관리자 진입 자동 동기화: ' + (r.addedRecords||0) + '건 추가');
+    } catch(e) { console.warn('[PBS-Child] 자동 동기화 오류:', e); }
+  }
   const tpl = document.getElementById('pbs-admin-template');
   const iframe = document.getElementById('pbs-admin-iframe');
   if (!tpl || !iframe) {
@@ -6244,14 +6246,4 @@ document.addEventListener('keydown', e => {
   if (e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
     e.preventDefault(); openAdminMode();
   }
-  if (e.key === 'Escape' && document.getElementById('pbs-admin-overlay')?.style.display === 'block') {
-    closeAdminMode();
-  }
-});
-if (window.location.hash === '#admin') {
-  setTimeout(() => openAdminMode(), 300);
-}
-
-</script>
-</body>
-</html>
+  if (e.key === 'Escape' && document.getElementById('pbs-adm
