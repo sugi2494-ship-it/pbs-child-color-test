@@ -4767,10 +4767,13 @@ document.addEventListener('click', (e) => {
   }
 });
 
-</script>
 
-</body>
-</html>
+
+/* ============================================================
+   복원된 외부 함수들 (escapeHtml, openIntroModal 관련, openAdminMode 등)
+   2026-05-14: </html> 이후로 빠져나간 코드를 script 안으로 복원
+   ============================================================ */
+
 </template>
 
 <div id="pbs-admin-overlay">
@@ -6246,4 +6249,17 @@ document.addEventListener('keydown', e => {
   if (e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
     e.preventDefault(); openAdminMode();
   }
-  if (e.key === 'Escape' && document.getElementById('pbs-adm
+  if (e.key === 'Escape' && document.getElementById('pbs-admadmin-overlay')?.style.display === 'block') {
+    closeAdminMode();
+  }
+});
+
+if (window.location.hash === '#admin') {
+  setTimeout(() => openAdminMode(), 300);
+}
+
+
+</script>
+
+</body>
+</html>
